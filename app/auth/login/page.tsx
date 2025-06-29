@@ -28,7 +28,7 @@ const Login = () => {
     setLoading(true);
     const error = await auth?.login(credentials);
     if (error) {
-      toast.error("");
+      toast.error(error.message || "Error signing you in");
       setLoading(false);
       return;
     }
@@ -47,12 +47,16 @@ const Login = () => {
 
         <div className="flex flex-col gap-y-3">
           <Label className="text-sm">Email</Label>
-          <Input type="email" placeholder="Enter your email" />
+          <Input type="email" name="email" placeholder="Enter your email" />
         </div>
 
         <div className="flex flex-col gap-y-4">
           <Label className="text-sm">Password</Label>
-          <Input type="password" placeholder="Enter your password" />
+          <Input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+          />
         </div>
 
         <div className="flex flex-col items-center justify-center mt-4 gap-y-4">

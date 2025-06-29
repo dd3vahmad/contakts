@@ -7,3 +7,9 @@ export interface IAuth {
   logout: () => Promise<AuthError | null>;
   signup: (credentials: SignUpWithPasswordCredentials) => Promise<AuthError | null>;
 }
+
+export interface IContact {
+  id: string
+  name: string
+  email: string
+}
