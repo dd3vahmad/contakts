@@ -5,3 +5,14 @@ CREATE TABLE contacts (
   email TEXT,
   created_at TIMESTAMP DEFAULT now()
 )
+
+ALTER TABLE contacts ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Users can access their contacts" ON contacts
+FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can insert their contacts" ON contacts
+FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their contacts" ON contacts
+FOR UPDATE USING (auth.uid() = user_id);
