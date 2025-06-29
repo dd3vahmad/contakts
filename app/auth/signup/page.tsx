@@ -3,18 +3,65 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/providers/auth";
 import Link from "next/link";
-import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 const Signup = () => {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [loading, setLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const auth = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // const credentials = {
-    //   email: formData.get("email"),
-    //   password: formData.get("password"),
-    // };
+    const password = formData.get("password")?.toString().trim() as string;
+    const confirmPassword = formData
+      .get("confirmPassword")
+      ?.toString()
+      .trim() as string;
+
+    if (password.length < 8) {
+      setPasswordError("Password must be of atleast 8 characters");
+      return;
+    }
+    setPasswordError("");
+
+    if (password.length !== confirmPassword.length) {
+      setConfirmPasswordError("Confirm password must be of the same length");
+      return;
+    }
+    setConfirmPasswordError("");
+
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Password is invalid");
+      return;
+    }
+    setConfirmPasswordError("");
+
+    const credentials = {
+      data: { full_name: formData.get("name")?.toString().trim() as string },
+      email: formData.get("email")?.toString().trim() as string,
+      password,
+    };
+
+    setLoading(true);
+    const error = await auth?.signup(credentials);
+    if (error) {
+      toast.error(error.message || "Error ceate your account");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+    router.refresh();
   };
 
   return (
@@ -42,6 +89,9 @@ const Signup = () => {
             name="password"
             placeholder="Enter your password"
           />
+          {passwordError && (
+            <p className="text-sm text-destructive">{passwordError}</p>
+          )}
         </div>
 
         <div className="flex flex-col gap-y-4">
@@ -51,11 +101,14 @@ const Signup = () => {
             name="confirmPassword"
             placeholder="Re-enter your password"
           />
+          {confirmPasswordError && (
+            <p className="text-sm text-destructive">{confirmPasswordError}</p>
+          )}
         </div>
 
         <div className="flex flex-col items-center justify-center mt-4 gap-y-4">
           <Button className="text-center w-full text-white cursor-pointer">
-            Login
+            {loading ? "..." : "Sign Up"}
           </Button>
 
           <p className="w-full text-center text-sm text-gray-500">

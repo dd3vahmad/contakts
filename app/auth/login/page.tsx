@@ -3,18 +3,38 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useAuth } from "@/providers/auth";
 import Link from "next/link";
-import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+import { toast } from "sonner";
 
 const Login = () => {
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const [loading, setLoading] = useState(false);
+  const auth = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
     const form = e.currentTarget;
     const formData = new FormData(form);
 
-    // const credentials = {
-    //   email: formData.get("email"),
-    //   password: formData.get("password"),
-    // };
+    const credentials = {
+      email: formData.get("email")?.toString().trim() as string,
+      password: formData.get("password")?.toString().trim() as string,
+    };
+
+    setLoading(true);
+    const error = await auth?.login(credentials);
+    if (error) {
+      toast.error("");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(false);
+    router.refresh();
   };
 
   return (
@@ -37,7 +57,7 @@ const Login = () => {
 
         <div className="flex flex-col items-center justify-center mt-4 gap-y-4">
           <Button className="text-center w-full text-white cursor-pointer">
-            Login
+            {loading ? "..." : "Login"}
           </Button>
 
           <p className="w-full text-center text-sm text-gray-500">
