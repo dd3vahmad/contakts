@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { FormEvent } from "react";
 
-const Login = () => {
+const Signup = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -23,16 +23,34 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="space-y-4 w-full px-6 max-w-md py-8 rounded-lg border flex flex-col justify-center"
       >
-        <h2 className="text-2xl font-semibold mb-6">Login to your account</h2>
+        <h2 className="text-2xl font-semibold mb-6">Create an account</h2>
+
+        <div className="flex flex-col gap-y-3">
+          <Label className="text-sm">Your Name</Label>
+          <Input name="name" placeholder="Enter your name" />
+        </div>
 
         <div className="flex flex-col gap-y-3">
           <Label className="text-sm">Email</Label>
-          <Input type="email" placeholder="Enter your email" />
+          <Input type="email" name="email" placeholder="Enter your email" />
         </div>
 
         <div className="flex flex-col gap-y-4">
           <Label className="text-sm">Password</Label>
-          <Input type="password" placeholder="Enter your password" />
+          <Input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+          />
+        </div>
+
+        <div className="flex flex-col gap-y-4">
+          <Label className="text-sm">Confirm Password</Label>
+          <Input
+            type="password"
+            name="confirmPassword"
+            placeholder="Re-enter your password"
+          />
         </div>
 
         <div className="flex flex-col items-center justify-center mt-4 gap-y-4">
@@ -41,12 +59,12 @@ const Login = () => {
           </Button>
 
           <p className="w-full text-center text-sm text-gray-500">
-            Don&apos;t have an account?{" "}
+            Already have an account?{" "}
             <Link
-              href={"/auth/signup"}
+              href={"/auth/login"}
               className="text-primary font-semibold cursor-pointer hover:underline"
             >
-              Sign Up
+              Login
             </Link>
           </p>
         </div>
@@ -55,4 +73,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Signup;
