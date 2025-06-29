@@ -1,5 +1,6 @@
 "use client";
 
+import NotAuthenticated from "@/components/NotAuthenticated";
 import { IAuth } from "@/constants/interface";
 import supabase from "@/lib/supabase/client";
 import {
@@ -55,6 +56,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const value = { currentUser, login, logout, signup, session };
+
+  // if (!session) return <NotAuthenticated />;
 
   return <Auth.Provider value={value}>{children}</Auth.Provider>;
 };
